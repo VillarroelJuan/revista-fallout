@@ -3,7 +3,7 @@ title: "El psicólogo del otro lado de la pantalla"
 date: 2026-09-01
 author: Juan Villarroel
 category: Tecno
----------------
+---
 
 # El psicólogo del otro lado de la pantalla
 
