@@ -57,7 +57,7 @@ La IA puede ser un espacio para ordenar lo que sentimos. Puede ayudarnos a prepa
 
 Pero hay una diferencia entre **usar una herramienta para entendernos y convertirla en la única persona a la que le contamos lo que nos pasa.**
 
-Ahi, es donde uno encuentroa el limite.
+Ahi, es donde uno encuentra el limite.
 
 ## El espejo que habla
 
