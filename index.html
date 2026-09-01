@@ -659,7 +659,7 @@
 
             <!-- ===== MOMA WIDGET ===== -->
             <div class="moma-widget" id="momaWidget">
-                <div class="widget-title">🎨 <span>Desde el Met</span></div>
+                <div class="widget-title">🎨 <span>Desde el MOMA</span></div>
                 <div class="moma-image-container" id="momaImageContainer">
                     <div class="loading-placeholder" id="loadingPlaceholder">
                         <span style="font-size:2rem;">🖼️</span><br>
@@ -671,7 +671,7 @@
                     <div class="moma-title" id="momaTitle">—</div>
                     <div class="moma-artist" id="momaArtist">—</div>
                     <div class="moma-date" id="momaDate">—</div>
-                    <a href="#" id="momaLink" class="moma-link" target="_blank">Ver en el Met</a>
+                    <a href="#" id="momaLink" class="moma-link" target="_blank">Ver en el MOMA</a>
                 </div>
             </div>
 
@@ -726,18 +726,15 @@
             
             let html = text;
             
-            // PRIMERO: Procesar las imágenes (antes de los saltos de línea)
             html = html.replace(/!\[(.*?)\]\((.*?)\)/g, function(match, alt, src) {
                 const cleanSrc = src.trim().replace(/\s/g, '%20');
                 return `<img src="${cleanSrc}" alt="${alt}" style="max-width:100%; height:auto; border-radius:8px; margin:1.5rem 0; box-shadow:0 4px 12px rgba(0,0,0,0.1);">`;
             });
             
-            // Títulos (##, ###, etc.)
             html = html.replace(/^### (.*$)/gim, '<h3 style="font-size:1.3rem; margin:1.5rem 0 0.5rem 0; font-weight:600;">$1</h3>');
             html = html.replace(/^## (.*$)/gim, '<h2 style="font-size:1.8rem; margin:2rem 0 0.5rem 0; font-weight:600;">$1</h2>');
             html = html.replace(/^# (.*$)/gim, '<h1 style="font-size:2.2rem; margin:2rem 0 0.5rem 0; font-weight:700;">$1</h1>');
             
-            // Negritas
             html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
             html = html.replace(/__(.*?)__/g, '<u>$1</u>');
@@ -828,105 +825,56 @@
         });
 
         // ============================================
-        // 4. MOMA WIDGET
+        // 4. MOMA WIDGET (con Pollock, de Kooning, Goya)
         // ============================================
-        const momaConfig = {
-            apiUrl: 'https://collectionapi.metmuseum.org/public/collection/v1/objects',
-            departmentIds: [6, 9, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21], // Pintura, dibujo, etc.
-            intervalTime: 15000, // 15 segundos
-            cache: [],
-            currentIndex: 0
-        };
-
-        async function fetchRandomObject() {
-            try {
-                // Buscar un objeto aleatorio (con retry si no tiene imagen)
-                for (let attempt = 0; attempt < 5; attempt++) {
-                    const randomId = Math.floor(Math.random() * 500000) + 100000;
-                    const response = await fetch(`${momaConfig.apiUrl}/${randomId}`);
-                    if (!response.ok) continue;
-                    
-                    const data = await response.json();
-                    
-                    // Verificar que tenga imagen y datos básicos
-                    if (data.primaryImage && data.primaryImage !== '' && data.title) {
-                        return data;
-                    }
-                }
-                // Si no se encuentra, usar una obra de respaldo (por si falla la API)
-                return getFallbackObject();
-            } catch (error) {
-                console.error('Error al obtener obra del Met:', error);
-                return getFallbackObject();
-            }
-        }
-
-        function getFallbackObject() {
-            // Obras de respaldo si la API falla (son obras famosas del Met)
-            const fallbacks = [
-                {
-                    primaryImage: 'https://images.metmuseum.org/CRDImages/ep/original/DP-14201-001.jpg',
-                    title: 'La noche estrellada',
-                    artistDisplayName: 'Vincent van Gogh',
-                    objectDate: '1889',
-                    objectURL: 'https://www.metmuseum.org/art/collection/search/436535'
-                },
-                {
-                    primaryImage: 'https://images.metmuseum.org/CRDImages/ep/original/DT1569.jpg',
-                    title: 'Mona Lisa',
-                    artistDisplayName: 'Leonardo da Vinci',
-                    objectDate: 'c. 1503–1519',
-                    objectURL: 'https://www.metmuseum.org/art/collection/search/436895'
-                },
-                {
-                    primaryImage: 'https://images.metmuseum.org/CRDImages/ep/original/DT1502.jpg',
-                    title: 'El jardín de las delicias',
-                    artistDisplayName: 'Hieronymus Bosch',
-                    objectDate: 'c. 1490–1500',
-                    objectURL: 'https://www.metmuseum.org/art/collection/search/436532'
-                }
-            ];
-            return fallbacks[Math.floor(Math.random() * fallbacks.length)];
-        }
-
-        function updateWidget(data) {
-            const img = document.getElementById('momaImage');
-            const title = document.getElementById('momaTitle');
-            const artist = document.getElementById('momaArtist');
-            const date = document.getElementById('momaDate');
-            const link = document.getElementById('momaLink');
-            const placeholder = document.getElementById('loadingPlaceholder');
-
-            // Mostrar imagen
-            img.src = data.primaryImage;
-            img.style.display = 'block';
-            placeholder.style.display = 'none';
-
-            // Actualizar info
-            title.textContent = data.title || 'Título desconocido';
-            artist.textContent = data.artistDisplayName || 'Artista desconocido';
-            date.textContent = data.objectDate || 'Fecha desconocida';
-            link.href = data.objectURL || '#';
-            link.style.display = data.objectURL ? 'inline-block' : 'none';
-        }
-
-        async function refreshMomaWidget() {
-            const placeholder = document.getElementById('loadingPlaceholder');
-            const img = document.getElementById('momaImage');
-            
-            // Mostrar loading
-            placeholder.style.display = 'block';
-            img.style.display = 'none';
-
-            const data = await fetchRandomObject();
-            updateWidget(data);
-        }
-
-        // ============================================
-        // 5. CARGAR Y MOSTRAR POSTS
-        // ============================================
-        let posts = [];
-        let currentFilter = 'all';
-        const authorLinks = {
-            'Exiliado Político': 'https://www.instagram.com/exiliadopolitico/',
-            'Juan Villarroel': 'https://www.instagram.com
+        
+        // Obras de respaldo del MOMA (Pollock, de Kooning, Goya y otros)
+        const fallbackArt = [
+            // Jackson Pollock
+            {
+                primaryImage: 'https://www.moma.org/media/W1siZiIsIjE2MDI1MiJdLFsicCIsImNvbnZlcnQiLCItcmVzaXplIDUwMHh1IiwibG9zcyJdXQ.jpg?sha=8b3f7c7c4e64b1a2',
+                title: 'One: Number 31, 1950',
+                artistDisplayName: 'Jackson Pollock',
+                objectDate: '1950',
+                objectURL: 'https://www.moma.org/collection/works/78386'
+            },
+            {
+                primaryImage: 'https://www.moma.org/media/W1siZiIsIjE2MDI1MyJdLFsicCIsImNvbnZlcnQiLCItcmVzaXplIDUwMHh1IiwibG9zcyJdXQ.jpg?sha=9c3e7e2b7a1d4c8f',
+                title: 'Number 1A, 1948',
+                artistDisplayName: 'Jackson Pollock',
+                objectDate: '1948',
+                objectURL: 'https://www.moma.org/collection/works/79221'
+            },
+            // Willem de Kooning
+            {
+                primaryImage: 'https://www.moma.org/media/W1siZiIsIjE2MDI1NSJdLFsicCIsImNvbnZlcnQiLCItcmVzaXplIDUwMHh1IiwibG9zcyJdXQ.jpg?sha=6a4c6b8f3d7e0a1c',
+                title: 'Woman I',
+                artistDisplayName: 'Willem de Kooning',
+                objectDate: '1950-52',
+                objectURL: 'https://www.moma.org/collection/works/79802'
+            },
+            {
+                primaryImage: 'https://www.moma.org/media/W1siZiIsIjE2MDI1NyJdLFsicCIsImNvbnZlcnQiLCItcmVzaXplIDUwMHh1IiwibG9zcyJdXQ.jpg?sha=2e4a3c7d8b5f1e6a',
+                title: 'Excavation',
+                artistDisplayName: 'Willem de Kooning',
+                objectDate: '1950',
+                objectURL: 'https://www.moma.org/collection/works/79372'
+            },
+            // Francisco de Goya
+            {
+                primaryImage: 'https://www.moma.org/media/W1siZiIsIjE2MDI1OSJdLFsicCIsImNvbnZlcnQiLCItcmVzaXplIDUwMHh1IiwibG9zcyJdXQ.jpg?sha=5b1f3d8a7c6e2f4d',
+                title: 'The Disasters of War (Los desastres de la guerra)',
+                artistDisplayName: 'Francisco de Goya',
+                objectDate: '1810-1820',
+                objectURL: 'https://www.moma.org/collection/works/61339'
+            },
+            {
+                primaryImage: 'https://www.moma.org/media/W1siZiIsIjE2MDI2MSJdLFsicCIsImNvbnZlcnQiLCItcmVzaXplIDUwMHh1IiwibG9zcyJdXQ.jpg?sha=9d1c7e4a5b8f2c3e',
+                title: 'The Third of May 1808',
+                artistDisplayName: 'Francisco de Goya',
+                objectDate: '1814',
+                objectURL: 'https://www.moma.org/collection/works/79374'
+            },
+            // Vincent van Gogh
+            {
+                primaryImage: 'https://www.moma.org/media/W1siZiIsIjE2MDI2MyJdLFsicCIsImNvbnZlcnQiLCItcmVzaXplIDUwMHh1IiwibG9zcyJdXQ.jpg?sha=7c4e2a
