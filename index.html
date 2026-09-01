@@ -11,16 +11,16 @@
         /* ===== RESET Y VARIABLES ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-       :root {
-    --bg: #f4f4f4;        /* <-- CAMBIA ESTO: Gris muy claro (en lugar de #ffffff) */
-    --bg-card: #ffffff;    /* Fondo de tarjetas, se mantiene blanco para destacar */
-    --text: #0a0a0a;
-    --text-sec: #444444;
-    --green: #b1ff05;
-    --border: #dddddd;
-    --font: 'Space Grotesk', sans-serif;
-    --shadow: 0 4px 20px rgba(0,0,0,0.06);
-}
+        :root {
+            --bg: #ffffff;
+            --bg-card: #f8f8f8;
+            --text: #0a0a0a;
+            --text-sec: #444444;
+            --green: #b1ff05;
+            --border: #dddddd;
+            --font: 'Space Grotesk', sans-serif;
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
 
         body {
             background: var(--bg);
@@ -30,7 +30,18 @@
             padding: 1.5rem;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            min-width: 0;
+        }
 
         /* ===== HEADER ===== */
         header {
@@ -142,7 +153,7 @@
         /* ===== GRID DE POSTS ===== */
         .grid-posts {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
             margin: 2rem 0;
         }
@@ -227,9 +238,7 @@
             margin: 2rem 0;
             box-shadow: var(--shadow);
         }
-        .post-full.visible {
-            display: block;
-        }
+        .post-full.visible { display: block; }
         .post-full .post-title {
             font-size: 2.5rem;
             font-weight: 700;
@@ -271,7 +280,110 @@
             margin-bottom: 1.5rem;
             transition: color 0.2s;
         }
-        .post-full .btn-back:hover {
+        .post-full .btn-back:hover { color: #000; }
+
+        /* ===== SIDEBAR (MOMA) ===== */
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            align-self: start;
+        }
+
+        .moma-widget {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-top: 3rem;
+        }
+
+        .moma-widget .widget-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-sec);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .moma-widget .widget-title span {
+            color: var(--green);
+            background: #000;
+            padding: 0 0.5rem;
+        }
+
+        .moma-image-container {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            background: #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .moma-image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: opacity 0.5s ease;
+        }
+
+        .moma-image-container .loading-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-sec);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .moma-info {
+            text-align: center;
+            padding: 0.5rem 0;
+        }
+
+        .moma-info .moma-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            line-height: 1.3;
+        }
+
+        .moma-info .moma-artist {
+            font-size: 0.8rem;
+            color: var(--text-sec);
+            margin-bottom: 0.2rem;
+        }
+
+        .moma-info .moma-date {
+            font-size: 0.7rem;
+            color: var(--text-sec);
+            opacity: 0.7;
+        }
+
+        .moma-info .moma-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--green);
+            background: #000;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .moma-info .moma-link:hover {
+            background: var(--green);
             color: #000;
         }
 
@@ -347,6 +459,7 @@
             gap: 1rem;
             font-size: 0.8rem;
             color: var(--text-sec);
+            grid-column: 1 / -1;
         }
         footer a {
             color: var(--text-sec);
@@ -359,6 +472,22 @@
         footer a:first-of-type { margin-left: 0; }
 
         /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+                margin-top: 2rem;
+            }
+            .moma-widget {
+                margin-top: 0;
+            }
+        }
+
         @media (max-width: 768px) {
             body { padding: 1rem; }
             header { flex-direction: column; align-items: flex-start; }
@@ -374,6 +503,9 @@
             footer a { margin: 0 0.8rem; }
             .post-full { padding: 1.5rem; }
             .post-full .post-title { font-size: 1.8rem; }
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* ===== MODAL CONTACTO ===== */
@@ -458,64 +590,92 @@
 <body>
     <div class="container" id="app">
 
-        <!-- ===== HEADER ===== -->
-        <header>
-            <div class="logo">
-                FALLOUT<span>.</span>
-                <small>Revista de ideas · Edición colaborativa</small>
+        <!-- ===== MAIN CONTENT ===== -->
+        <div class="main-content">
+
+            <!-- ===== HEADER ===== -->
+            <header>
+                <div class="logo">
+                    FALLOUT<span>.</span>
+                    <small>Revista de ideas · Edición colaborativa</small>
+                </div>
+                <nav>
+                    <a onclick="filterPosts('all')">Todos</a>
+                    <a onclick="filterPosts('Política')">Política</a>
+                    <a onclick="filterPosts('Cultura')">Cultura</a>
+                    <a onclick="filterPosts('Tecno')">Tecno</a>
+                    <a onclick="filterPosts('Podcast')">Podcast</a>
+                    <a onclick="filterPosts('Arte')">Arte</a>
+                </nav>
+            </header>
+
+            <!-- ===== HERO ===== -->
+            <section class="hero">
+                <h1>
+                    La posibilidad de un futuro diferente <span class="highlight">ha sido bloqueada</span>,<br>
+                    por suerte, existimos nosotros.
+                </h1>
+                <p>
+                    Crítica, análisis y conversaciones que importan. Hecho por 
+                    <a href="https://www.instagram.com/exiliadopolitico/" target="_blank">Exiliado Político</a> 
+                    & 
+                    <a href="https://www.instagram.com/juanmaavilla/" target="_blank">Juan Villarroel</a>.
+                </p>
+            </section>
+
+            <!-- ===== BARRA ADMIN ===== -->
+            <div class="admin-bar">
+                <button class="btn btn-primary" onclick="openContact()">✉️ Contáctanos</button>
             </div>
-            <nav>
-                <a onclick="filterPosts('all')">Todos</a>
-                <a onclick="filterPosts('Política')">Política</a>
-                <a onclick="filterPosts('Cultura')">Cultura</a>
-                <a onclick="filterPosts('Tecno')">Tecno</a>
-                <a onclick="filterPosts('Podcast')">Podcast</a>
-                <a onclick="filterPosts('Arte')">Arte</a>
-            </nav>
-        </header>
 
-        <!-- ===== HERO ===== -->
-        <section class="hero">
-            <h1>
-                La posibilidad de un futuro diferente <span class="highlight">ha sido bloqueada</span>.<br>
-                Por suerte, existimos nosotros.
-            </h1>
-            <p>
-                Crítica, análisis y conversaciones que importan. Hecho por 
-                <a href="https://www.instagram.com/exiliadopolitico/" target="_blank">Exiliado Político</a> 
-                & 
-                <a href="https://www.instagram.com/juanmaavilla/" target="_blank">Juan Villarroel</a>.
-            </p>
-        </section>
+            <!-- ===== CONTENEDOR DE POSTS ===== -->
+            <div id="postsContainer">
+                <!-- Los posts se cargan con JavaScript -->
+            </div>
 
-        <!-- ===== BARRA ADMIN ===== -->
-        <div class="admin-bar">
-            <button class="btn btn-primary" onclick="openContact()">✉️ Contáctanos</button>
-        </div>
+            <!-- ===== VISTA DE POST COMPLETO ===== -->
+            <div id="postFull" class="post-full">
+                <button class="btn-back" onclick="closePost()">← Volver a todos los posts</button>
+                <h1 class="post-title" id="fullTitle"></h1>
+                <div class="post-meta-full" id="fullMeta"></div>
+                <div class="post-body" id="fullBody"></div>
+            </div>
 
-        <!-- ===== CONTENEDOR DE POSTS ===== -->
-        <div id="postsContainer">
-            <!-- Los posts se cargan con JavaScript -->
-        </div>
+            <!-- ===== SUSCRIPCIÓN ===== -->
+            <section class="subscribe-section">
+                <h2>Que las noticias no te tomen por sorpresa</h2>
+                <p>Recibí nuevos contenidos en tu inbox:</p>
+                <form class="subscribe-form" id="subscribeForm">
+                    <input type="email" id="subscribeEmail" placeholder="tu@email.com" required>
+                    <button type="submit" class="btn-subscribe">Suscribirse</button>
+                </form>
+                <p style="font-size:0.8rem; margin-top:1rem; color:#666;">Prometemos no enviar spam. Solo contenido de calidad.</p>
+            </section>
 
-        <!-- ===== VISTA DE POST COMPLETO ===== -->
-        <div id="postFull" class="post-full">
-            <button class="btn-back" onclick="closePost()">← Volver a todos los posts</button>
-            <h1 class="post-title" id="fullTitle"></h1>
-            <div class="post-meta-full" id="fullMeta"></div>
-            <div class="post-body" id="fullBody"></div>
-        </div>
+        </div> <!-- end main-content -->
 
-        <!-- ===== SUSCRIPCIÓN ===== -->
-        <section class="subscribe-section">
-            <h2>Que las noticias no te tomen por sorpresa</h2>
-            <p>Recibí nuevos contenidos en tu inbox:</p>
-            <form class="subscribe-form" id="subscribeForm">
-                <input type="email" id="subscribeEmail" placeholder="tu@email.com" required>
-                <button type="submit" class="btn-subscribe">Suscribirse</button>
-            </form>
-            <p style="font-size:0.8rem; margin-top:1rem; color:#666;">Prometemos no enviar spam. Solo contenido de calidad.</p>
-        </section>
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar">
+
+            <!-- ===== MOMA WIDGET ===== -->
+            <div class="moma-widget" id="momaWidget">
+                <div class="widget-title">🎨 <span>Desde el Met</span></div>
+                <div class="moma-image-container" id="momaImageContainer">
+                    <div class="loading-placeholder" id="loadingPlaceholder">
+                        <span style="font-size:2rem;">🖼️</span><br>
+                        Cargando obra...
+                    </div>
+                    <img id="momaImage" style="display:none;" alt="Obra de arte">
+                </div>
+                <div class="moma-info">
+                    <div class="moma-title" id="momaTitle">—</div>
+                    <div class="moma-artist" id="momaArtist">—</div>
+                    <div class="moma-date" id="momaDate">—</div>
+                    <a href="#" id="momaLink" class="moma-link" target="_blank">Ver en el Met</a>
+                </div>
+            </div>
+
+        </aside>
 
         <!-- ===== FOOTER ===== -->
         <footer>
@@ -530,7 +690,7 @@
             </div>
         </footer>
 
-    </div>
+    </div> <!-- end container -->
 
     <!-- ===== MODAL CONTACTO ===== -->
     <div class="modal-overlay" id="contactModal">
@@ -568,7 +728,6 @@
             
             // PRIMERO: Procesar las imágenes (antes de los saltos de línea)
             html = html.replace(/!\[(.*?)\]\((.*?)\)/g, function(match, alt, src) {
-                // Limpiar la URL: eliminar espacios y caracteres extraños
                 const cleanSrc = src.trim().replace(/\s/g, '%20');
                 return `<img src="${cleanSrc}" alt="${alt}" style="max-width:100%; height:auto; border-radius:8px; margin:1.5rem 0; box-shadow:0 4px 12px rgba(0,0,0,0.1);">`;
             });
@@ -580,17 +739,9 @@
             
             // Negritas
             html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-            
-            // Cursivas
             html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
-            
-            // Subrayado
             html = html.replace(/__(.*?)__/g, '<u>$1</u>');
-            
-            // Links
             html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color:#000; text-decoration:underline; text-decoration-color:var(--green);">$1</a>');
-            
-            // Saltos de línea (DESPUÉS de procesar imágenes y links)
             html = html.replace(/\n/g, '<br>');
             
             return html;
@@ -677,184 +828,105 @@
         });
 
         // ============================================
-        // 4. CARGAR Y MOSTRAR POSTS
+        // 4. MOMA WIDGET
+        // ============================================
+        const momaConfig = {
+            apiUrl: 'https://collectionapi.metmuseum.org/public/collection/v1/objects',
+            departmentIds: [6, 9, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21], // Pintura, dibujo, etc.
+            intervalTime: 15000, // 15 segundos
+            cache: [],
+            currentIndex: 0
+        };
+
+        async function fetchRandomObject() {
+            try {
+                // Buscar un objeto aleatorio (con retry si no tiene imagen)
+                for (let attempt = 0; attempt < 5; attempt++) {
+                    const randomId = Math.floor(Math.random() * 500000) + 100000;
+                    const response = await fetch(`${momaConfig.apiUrl}/${randomId}`);
+                    if (!response.ok) continue;
+                    
+                    const data = await response.json();
+                    
+                    // Verificar que tenga imagen y datos básicos
+                    if (data.primaryImage && data.primaryImage !== '' && data.title) {
+                        return data;
+                    }
+                }
+                // Si no se encuentra, usar una obra de respaldo (por si falla la API)
+                return getFallbackObject();
+            } catch (error) {
+                console.error('Error al obtener obra del Met:', error);
+                return getFallbackObject();
+            }
+        }
+
+        function getFallbackObject() {
+            // Obras de respaldo si la API falla (son obras famosas del Met)
+            const fallbacks = [
+                {
+                    primaryImage: 'https://images.metmuseum.org/CRDImages/ep/original/DP-14201-001.jpg',
+                    title: 'La noche estrellada',
+                    artistDisplayName: 'Vincent van Gogh',
+                    objectDate: '1889',
+                    objectURL: 'https://www.metmuseum.org/art/collection/search/436535'
+                },
+                {
+                    primaryImage: 'https://images.metmuseum.org/CRDImages/ep/original/DT1569.jpg',
+                    title: 'Mona Lisa',
+                    artistDisplayName: 'Leonardo da Vinci',
+                    objectDate: 'c. 1503–1519',
+                    objectURL: 'https://www.metmuseum.org/art/collection/search/436895'
+                },
+                {
+                    primaryImage: 'https://images.metmuseum.org/CRDImages/ep/original/DT1502.jpg',
+                    title: 'El jardín de las delicias',
+                    artistDisplayName: 'Hieronymus Bosch',
+                    objectDate: 'c. 1490–1500',
+                    objectURL: 'https://www.metmuseum.org/art/collection/search/436532'
+                }
+            ];
+            return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+        }
+
+        function updateWidget(data) {
+            const img = document.getElementById('momaImage');
+            const title = document.getElementById('momaTitle');
+            const artist = document.getElementById('momaArtist');
+            const date = document.getElementById('momaDate');
+            const link = document.getElementById('momaLink');
+            const placeholder = document.getElementById('loadingPlaceholder');
+
+            // Mostrar imagen
+            img.src = data.primaryImage;
+            img.style.display = 'block';
+            placeholder.style.display = 'none';
+
+            // Actualizar info
+            title.textContent = data.title || 'Título desconocido';
+            artist.textContent = data.artistDisplayName || 'Artista desconocido';
+            date.textContent = data.objectDate || 'Fecha desconocida';
+            link.href = data.objectURL || '#';
+            link.style.display = data.objectURL ? 'inline-block' : 'none';
+        }
+
+        async function refreshMomaWidget() {
+            const placeholder = document.getElementById('loadingPlaceholder');
+            const img = document.getElementById('momaImage');
+            
+            // Mostrar loading
+            placeholder.style.display = 'block';
+            img.style.display = 'none';
+
+            const data = await fetchRandomObject();
+            updateWidget(data);
+        }
+
+        // ============================================
+        // 5. CARGAR Y MOSTRAR POSTS
         // ============================================
         let posts = [];
         let currentFilter = 'all';
         const authorLinks = {
             'Exiliado Político': 'https://www.instagram.com/exiliadopolitico/',
-            'Juan Villarroel': 'https://www.instagram.com/juanmaavilla/'
-        };
-
-               // Lista de archivos de posts - AGREGAR NUEVOS POSTS AQUÍ
-        const postFiles = [
-            'async-de-ryuichi-sakamoto-sonidos-para-esculpir-el-tiempo.md',
-            'el-vertigo-del-vacio-suicidios-en-argentina.md'  // <-- NUEVO POST
-        ];
-
-        async function loadPosts() {
-            try {
-                console.log('Intentando cargar posts desde archivos directos...');
-                
-                const postsPromises = postFiles.map(async (filename) => {
-                    const url = `https://raw.githubusercontent.com/VillarroelJuan/revista-fallout/main/posts/${filename}`;
-                    console.log(`Cargando: ${url}`);
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`Error al cargar ${filename}: ${response.status}`);
-                    }
-                    const content = await response.text();
-                    return parseMarkdown(content, filename);
-                });
-                
-                posts = await Promise.all(postsPromises);
-                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-                console.log('Posts cargados exitosamente:', posts);
-                renderPosts();
-                
-            } catch (error) {
-                console.error('Error en loadPosts:', error);
-                document.getElementById('postsContainer').innerHTML = `
-                    <div style="text-align:center;padding:3rem;color:var(--text-sec);">
-                        <p style="font-size:1.5rem;">❌</p>
-                        <p>Error al cargar los posts.</p>
-                        <p style="font-size:0.8rem;margin-top:1rem;">${error.message}</p>
-                        <p style="font-size:0.8rem;">Verificá la consola para más detalles.</p>
-                    </div>
-                `;
-            }
-        }
-
-        function parseMarkdown(content, filename) {
-            const lines = content.split('\n');
-            const metadata = {};
-            let bodyLines = [];
-            if (lines[0].trim() === '---') {
-                let i = 1;
-                while (i < lines.length && lines[i].trim() !== '---') {
-                    const line = lines[i];
-                    const colonIndex = line.indexOf(':');
-                    if (colonIndex !== -1) {
-                        const key = line.substring(0, colonIndex).trim();
-                        let value = line.substring(colonIndex + 1).trim();
-                        if (value.startsWith('"') && value.endsWith('"')) {
-                            value = value.substring(1, value.length - 1);
-                        }
-                        metadata[key] = value;
-                    }
-                    i++;
-                }
-                bodyLines = lines.slice(i + 1);
-            } else {
-                bodyLines = lines;
-            }
-            const body = bodyLines.join('\n').trim();
-            const author = metadata.author || 'Anónimo';
-            const authorLink = authorLinks[author] || '#';
-            return {
-                id: filename.replace('.md', ''),
-                title: metadata.title || 'Sin título',
-                category: metadata.category || 'Otros',
-                author: author,
-                authorLink: authorLink,
-                date: metadata.date || new Date().toISOString().split('T')[0],
-                content: body,
-                fullContent: body
-            };
-        }
-
-        function renderPosts() {
-            const container = document.getElementById('postsContainer');
-            const filtered = currentFilter === 'all' 
-                ? posts 
-                : posts.filter(p => p.category === currentFilter);
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="grid-posts">
-                        <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-sec);">
-                            <p style="font-size:1.5rem;">💥</p>
-                            <p>No hay posts en esta categoría.</p>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = `<div class="grid-posts">` + filtered.map(post => `
-                <div class="post-card" onclick="openPost('${post.id}')">
-                    <span class="post-cat">${post.category}</span>
-                    <h3>${post.title}</h3>
-                    <div class="content">${renderMarkdown(post.content.substring(0, 200))}${post.content.length > 200 ? '...' : ''}</div>
-                    <div class="post-meta">
-                        <span class="author"><a href="${post.authorLink}" target="_blank">${post.author}</a></span>
-                        <span class="date">${formatDate(post.date)}</span>
-                    </div>
-                </div>
-            `).join('') + `</div>`;
-        }
-
-        function formatDate(dateStr) {
-            if (!dateStr) return 'Fecha no disponible';
-            const parts = dateStr.split('-');
-            if (parts.length === 3) {
-                return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
-            return dateStr;
-        }
-
-        // ============================================
-        // 5. ABRIR Y CERRAR POST COMPLETO
-        // ============================================
-        function openPost(postId) {
-            const post = posts.find(p => p.id === postId);
-            if (!post) return;
-            document.getElementById('postsContainer').style.display = 'none';
-            const fullView = document.getElementById('postFull');
-            fullView.classList.add('visible');
-            document.getElementById('fullTitle').textContent = post.title;
-            document.getElementById('fullMeta').innerHTML = `
-                <span class="author"><a href="${post.authorLink}" target="_blank">${post.author}</a></span>
-                <span style="margin:0 0.5rem;">·</span>
-                <span class="date">${formatDate(post.date)}</span>
-                <span style="margin:0 0.5rem;">·</span>
-                <span class="category">${post.category}</span>
-            `;
-            document.getElementById('fullBody').innerHTML = renderMarkdown(post.fullContent);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function closePost() {
-            document.getElementById('postFull').classList.remove('visible');
-            document.getElementById('postsContainer').style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // ============================================
-        // 6. FILTROS
-        // ============================================
-        function filterPosts(category) {
-            currentFilter = category;
-            if (document.getElementById('postFull').classList.contains('visible')) {
-                closePost();
-            }
-            renderPosts();
-            document.querySelectorAll('nav a').forEach(a => {
-                a.style.borderBottomColor = 'transparent';
-                a.style.color = 'var(--text-sec)';
-            });
-            const links = document.querySelectorAll('nav a');
-            const index = category === 'all' ? 0 : ['Política','Cultura','Tecno','Podcast','Arte'].indexOf(category) + 1;
-            if (links[index]) {
-                links[index].style.borderBottomColor = 'var(--green)';
-                links[index].style.color = '#000';
-            }
-        }
-
-        // ============================================
-        // 7. INICIALIZAR
-        // ============================================
-        loadPosts();
-    </script>
-</body>
-</html>
+            'Juan Villarroel': 'https://www.instagram.com
