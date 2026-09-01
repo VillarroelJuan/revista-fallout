@@ -2,10 +2,8 @@
 title: "El psicólogo del otro lado de la pantalla"
 date: 2026-09-01
 author: Juan Villarroel
-category: Tecno
+category: Tecnologia
 ---
-
-# El psicólogo del otro lado de la pantalla
 
 *Sobre inteligencia artificial, soledad y la extraña necesidad de hablar con algo que no es humano.*
 
