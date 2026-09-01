@@ -639,7 +639,7 @@
         });
 
         // ============================================
-        // 4. CARGAR Y MOSTRAR POSTS
+        // 4. CARGAR Y MOSTRAR POSTS (ALTERNATIVA SIN TOKEN)
         // ============================================
         let posts = [];
         let currentFilter = 'all';
@@ -648,29 +648,40 @@
             'Juan Villarroel': 'https://www.instagram.com/juanmaavilla/'
         };
 
+        // Esta es la lista de tus archivos .md. AGREGALOS MANUALMENTE ACÁ
+        const postFiles = [
+            'async-de-ryuichi-sakamoto-sonidos-para-esculpir-el-tiempo.md'
+        ];
+
         async function loadPosts() {
             try {
-                const response = await fetch('https://api.github.com/repos/VillarroelJuan/revista-fallout/contents/posts');
-                if (!response.ok) throw new Error('No se pudieron cargar los posts');
-                const files = await response.json();
-                const mdFiles = files.filter(f => f.name.endsWith('.md'));
-                const postsPromises = mdFiles.map(async (file) => {
-                    const contentResponse = await fetch(file.download_url);
-                    const content = await contentResponse.text();
-                    return parseMarkdown(content, file.name);
+                console.log('Intentando cargar posts desde archivos directos...');
+                
+                // Cargar cada archivo manualmente desde la URL directa (raw)
+                const postsPromises = postFiles.map(async (filename) => {
+                    const url = `https://raw.githubusercontent.com/VillarroelJuan/revista-fallout/main/posts/${filename}`;
+                    console.log(`Cargando: ${url}`);
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Error al cargar ${filename}: ${response.status}`);
+                    }
+                    const content = await response.text();
+                    return parseMarkdown(content, filename);
                 });
+                
                 posts = await Promise.all(postsPromises);
                 posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                console.log('Posts cargados exitosamente:', posts);
                 renderPosts();
+                
             } catch (error) {
-                console.error('Error cargando posts:', error);
+                console.error('Error en loadPosts:', error);
                 document.getElementById('postsContainer').innerHTML = `
                     <div style="text-align:center;padding:3rem;color:var(--text-sec);">
-                        <p style="font-size:1.5rem;">📝</p>
-                        <p>No hay posts aún.</p>
-                        <p style="font-size:0.8rem;margin-top:1rem;">
-                            <a href="/admin/" style="color:#000;font-weight:600;text-decoration:underline;">Creá tu primer post desde el panel de administración</a>
-                        </p>
+                        <p style="font-size:1.5rem;">❌</p>
+                        <p>Error al cargar los posts.</p>
+                        <p style="font-size:0.8rem;margin-top:1rem;">${error.message}</p>
+                        <p style="font-size:0.8rem;">Verificá la consola para más detalles.</p>
                     </div>
                 `;
             }
