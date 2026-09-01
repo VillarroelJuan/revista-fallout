@@ -4,7 +4,7 @@ date: 2026-08-31
 author: Exiliado Político
 category: Cultura
 ---
-"Por eso intenté olvidar todas las reglas y formas. Solo quería poner lo que quería escuchar. Esta podría ser la última vez."\
+"Por eso intenté olvidar todas las reglas y formas. Solo quería poner lo que quería escuchar. Esta podría ser la última vez."
 — *Ryuichi Sakamoto*
 
 - - -
