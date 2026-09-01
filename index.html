@@ -554,6 +554,7 @@
             <div id="contactStatus" style="margin-top:1rem; font-weight:600; text-align:center;"></div>
         </div>
     </div>
+
     <!-- ============================================================ -->
     <!-- ===== JAVASCRIPT ===== -->
     <script>
@@ -564,6 +565,13 @@
             if (!text) return '';
             
             let html = text;
+            
+            // PRIMERO: Procesar las imágenes (antes de los saltos de línea)
+            html = html.replace(/!\[(.*?)\]\((.*?)\)/g, function(match, alt, src) {
+                // Limpiar la URL: eliminar espacios y caracteres extraños
+                const cleanSrc = src.trim().replace(/\s/g, '%20');
+                return `<img src="${cleanSrc}" alt="${alt}" style="max-width:100%; height:auto; border-radius:8px; margin:1.5rem 0; box-shadow:0 4px 12px rgba(0,0,0,0.1);">`;
+            });
             
             // Títulos (##, ###, etc.)
             html = html.replace(/^### (.*$)/gim, '<h3 style="font-size:1.3rem; margin:1.5rem 0 0.5rem 0; font-weight:600;">$1</h3>');
@@ -582,10 +590,7 @@
             // Links
             html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color:#000; text-decoration:underline; text-decoration-color:var(--green);">$1</a>');
             
-            // Imágenes
-            html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" style="max-width:100%; height:auto; border-radius:8px; margin:1.5rem 0; box-shadow:0 4px 12px rgba(0,0,0,0.1);">');
-            
-            // Saltos de línea
+            // Saltos de línea (DESPUÉS de procesar imágenes y links)
             html = html.replace(/\n/g, '<br>');
             
             return html;
@@ -681,7 +686,7 @@
             'Juan Villarroel': 'https://www.instagram.com/juanmaavilla/'
         };
 
-        // Lista de archivos de posts
+        // Lista de archivos de posts - AGREGAR NUEVOS POSTS AQUÍ
         const postFiles = [
             'async-de-ryuichi-sakamoto-sonidos-para-esculpir-el-tiempo.md'
         ];
@@ -743,7 +748,6 @@
                 bodyLines = lines;
             }
             const body = bodyLines.join('\n').trim();
-            // Guardamos el contenido RAW (sin procesar) para pasarlo a renderMarkdown
             const author = metadata.author || 'Anónimo';
             const authorLink = authorLinks[author] || '#';
             return {
@@ -753,8 +757,8 @@
                 author: author,
                 authorLink: authorLink,
                 date: metadata.date || new Date().toISOString().split('T')[0],
-                content: body, // Guardamos el contenido sin procesar
-                fullContent: body // Guardamos el contenido sin procesar
+                content: body,
+                fullContent: body
             };
         }
 
@@ -815,7 +819,6 @@
                 <span style="margin:0 0.5rem;">·</span>
                 <span class="category">${post.category}</span>
             `;
-            // Ahora usamos renderMarkdown para mostrar el contenido con formato
             document.getElementById('fullBody').innerHTML = renderMarkdown(post.fullContent);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
