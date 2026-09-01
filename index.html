@@ -554,10 +554,43 @@
             <div id="contactStatus" style="margin-top:1rem; font-weight:600; text-align:center;"></div>
         </div>
     </div>
-
     <!-- ============================================================ -->
     <!-- ===== JAVASCRIPT ===== -->
     <script>
+        // ============================================
+        // 0. FUNCIÓN PARA CONVERTIR MARKDOWN A HTML
+        // ============================================
+        function renderMarkdown(text) {
+            if (!text) return '';
+            
+            let html = text;
+            
+            // Títulos (##, ###, etc.)
+            html = html.replace(/^### (.*$)/gim, '<h3 style="font-size:1.3rem; margin:1.5rem 0 0.5rem 0; font-weight:600;">$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2 style="font-size:1.8rem; margin:2rem 0 0.5rem 0; font-weight:600;">$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1 style="font-size:2.2rem; margin:2rem 0 0.5rem 0; font-weight:700;">$1</h1>');
+            
+            // Negritas
+            html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            
+            // Cursivas
+            html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
+            
+            // Subrayado
+            html = html.replace(/__(.*?)__/g, '<u>$1</u>');
+            
+            // Links
+            html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color:#000; text-decoration:underline; text-decoration-color:var(--green);">$1</a>');
+            
+            // Imágenes
+            html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" style="max-width:100%; height:auto; border-radius:8px; margin:1.5rem 0; box-shadow:0 4px 12px rgba(0,0,0,0.1);">');
+            
+            // Saltos de línea
+            html = html.replace(/\n/g, '<br>');
+            
+            return html;
+        }
+
         // ============================================
         // 1. CONTROL DE MODALES
         // ============================================
@@ -639,7 +672,7 @@
         });
 
         // ============================================
-        // 4. CARGAR Y MOSTRAR POSTS (ALTERNATIVA SIN TOKEN)
+        // 4. CARGAR Y MOSTRAR POSTS
         // ============================================
         let posts = [];
         let currentFilter = 'all';
@@ -648,7 +681,7 @@
             'Juan Villarroel': 'https://www.instagram.com/juanmaavilla/'
         };
 
-        // Esta es la lista de tus archivos .md. AGREGALOS MANUALMENTE ACÁ
+        // Lista de archivos de posts
         const postFiles = [
             'async-de-ryuichi-sakamoto-sonidos-para-esculpir-el-tiempo.md'
         ];
@@ -657,7 +690,6 @@
             try {
                 console.log('Intentando cargar posts desde archivos directos...');
                 
-                // Cargar cada archivo manualmente desde la URL directa (raw)
                 const postsPromises = postFiles.map(async (filename) => {
                     const url = `https://raw.githubusercontent.com/VillarroelJuan/revista-fallout/main/posts/${filename}`;
                     console.log(`Cargando: ${url}`);
@@ -711,7 +743,7 @@
                 bodyLines = lines;
             }
             const body = bodyLines.join('\n').trim();
-            const contentHtml = parseContent(body);
+            // Guardamos el contenido RAW (sin procesar) para pasarlo a renderMarkdown
             const author = metadata.author || 'Anónimo';
             const authorLink = authorLinks[author] || '#';
             return {
@@ -721,20 +753,9 @@
                 author: author,
                 authorLink: authorLink,
                 date: metadata.date || new Date().toISOString().split('T')[0],
-                content: contentHtml,
-                fullContent: contentHtml
+                content: body, // Guardamos el contenido sin procesar
+                fullContent: body // Guardamos el contenido sin procesar
             };
-        }
-
-        function parseContent(text) {
-            if (!text) return '';
-            return text
-                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-                .replace(/\*(.*?)\*/g, '<i>$1</i>')
-                .replace(/__(.*?)__/g, '<u>$1</u>')
-                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>')
-                .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" loading="lazy">')
-                .replace(/\n/g, '<br>');
         }
 
         function renderPosts() {
@@ -759,7 +780,7 @@
                 <div class="post-card" onclick="openPost('${post.id}')">
                     <span class="post-cat">${post.category}</span>
                     <h3>${post.title}</h3>
-                    <div class="content">${post.content.substring(0, 200)}${post.content.length > 200 ? '...' : ''}</div>
+                    <div class="content">${renderMarkdown(post.content.substring(0, 200))}${post.content.length > 200 ? '...' : ''}</div>
                     <div class="post-meta">
                         <span class="author"><a href="${post.authorLink}" target="_blank">${post.author}</a></span>
                         <span class="date">${formatDate(post.date)}</span>
@@ -794,7 +815,8 @@
                 <span style="margin:0 0.5rem;">·</span>
                 <span class="category">${post.category}</span>
             `;
-            document.getElementById('fullBody').innerHTML = post.fullContent;
+            // Ahora usamos renderMarkdown para mostrar el contenido con formato
+            document.getElementById('fullBody').innerHTML = renderMarkdown(post.fullContent);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
