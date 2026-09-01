@@ -66,5 +66,3 @@ Sakamoto nos confronta con nuestra propia finitud. Vivimos tan absortos que olvi
 En un mundo saturado de estímulos efímeros, *Async* es un acto de resistencia. Es un viaje al subconsciente que despierta emociones dormidas, un retorno a la tristeza de la infancia y un encuentro prematuro con la muerte que, paradójicamente, nos devuelve a la vida.
 
 No importa desde dónde se lo escuche. El álbum nació para interpelar al oyente, para hacerlo parte de su atmósfera de nostalgia y caos. *Async* no es solo un disco. Es presenciar un adiós y un renacimiento.
-
-<!--EndFragment-->
