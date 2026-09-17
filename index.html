@@ -223,8 +223,9 @@
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 2.5rem;
-            margin: 2rem 0;
+            padding: 3rem 2.5rem;
+            margin: 0 auto;
+            max-width: 900px;
             box-shadow: var(--shadow);
         }
         .post-full.visible {
@@ -242,6 +243,12 @@
             margin-bottom: 2rem;
             border-bottom: 1px solid var(--border);
             padding-bottom: 1rem;
+        }
+        .post-full .post-meta-full a {
+            color: #000;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px dotted var(--green);
         }
         .post-full .post-body {
             font-size: 1.1rem;
@@ -261,18 +268,40 @@
             color: var(--text-sec);
         }
         .post-full .btn-back {
-            background: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #000;
+            color: var(--green);
             border: none;
-            color: var(--text-sec);
             cursor: pointer;
             font-family: var(--font);
-            font-size: 0.9rem;
-            padding: 0.5rem 0;
-            margin-bottom: 1.5rem;
-            transition: color 0.2s;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.6rem 1.4rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            transition: all 0.2s;
         }
         .post-full .btn-back:hover {
+            background: var(--green);
             color: #000;
+            transform: translateX(-3px);
+        }
+
+        /* ===== OCULTAR SECCIONES CUANDO SE VE UN POST ===== */
+        body.viewing-post header,
+        body.viewing-post .hero,
+        body.viewing-post .admin-bar,
+        body.viewing-post .subscribe-section,
+        body.viewing-post footer {
+            display: none !important;
+        }
+
+        body.viewing-post {
+            padding-top: 1rem;
         }
 
         /* ===== SUSCRIPCIÓN ===== */
@@ -372,8 +401,9 @@
             .subscribe-form input[type="email"] { min-width: auto; }
             footer { flex-direction: column; align-items: center; text-align: center; }
             footer a { margin: 0 0.8rem; }
-            .post-full { padding: 1.5rem; }
+            .post-full { padding: 1.5rem; border-radius: 8px; }
             .post-full .post-title { font-size: 1.8rem; }
+            .post-full .post-body { font-size: 1rem; }
         }
 
         /* ===== MODAL CONTACTO ===== */
@@ -568,12 +598,11 @@
             
             // PRIMERO: Procesar las imágenes (antes de los saltos de línea)
             html = html.replace(/!\[(.*?)\]\((.*?)\)/g, function(match, alt, src) {
-                // Limpiar la URL: eliminar espacios y caracteres extraños
                 const cleanSrc = src.trim().replace(/\s/g, '%20');
                 return `<img src="${cleanSrc}" alt="${alt}" style="max-width:100%; height:auto; border-radius:8px; margin:1.5rem 0; box-shadow:0 4px 12px rgba(0,0,0,0.1);">`;
             });
             
-            // Títulos (##, ###, etc.)
+            // Títulos
             html = html.replace(/^### (.*$)/gim, '<h3 style="font-size:1.3rem; margin:1.5rem 0 0.5rem 0; font-weight:600;">$1</h3>');
             html = html.replace(/^## (.*$)/gim, '<h2 style="font-size:1.8rem; margin:2rem 0 0.5rem 0; font-weight:600;">$1</h2>');
             html = html.replace(/^# (.*$)/gim, '<h1 style="font-size:2.2rem; margin:2rem 0 0.5rem 0; font-weight:700;">$1</h1>');
@@ -590,7 +619,7 @@
             // Links
             html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color:#000; text-decoration:underline; text-decoration-color:var(--green);">$1</a>');
             
-            // Saltos de línea (DESPUÉS de procesar imágenes y links)
+            // Saltos de línea
             html = html.replace(/\n/g, '<br>');
             
             return html;
@@ -686,10 +715,10 @@
             'Juan Villarroel': 'https://www.instagram.com/juanmaavilla/'
         };
 
-               // Lista de archivos de posts - AGREGAR NUEVOS POSTS AQUÍ
+        // Lista de archivos de posts - AGREGAR NUEVOS POSTS AQUÍ
         const postFiles = [
             'async-de-ryuichi-sakamoto-sonidos-para-esculpir-el-tiempo.md',
-            'el-vertigo-del-vacio-suicidios-en-argentina.md'  // <-- NUEVO POST
+            'el-vertigo-del-vacio-suicidios-en-argentina.md'
         ];
 
         async function loadPosts() {
@@ -787,7 +816,7 @@
                     <h3>${post.title}</h3>
                     <div class="content">${renderMarkdown(post.content.substring(0, 200))}${post.content.length > 200 ? '...' : ''}</div>
                     <div class="post-meta">
-                        <span class="author"><a href="${post.authorLink}" target="_blank">${post.author}</a></span>
+                        <span class="author"><a href="${post.authorLink}" target="_blank" onclick="event.stopPropagation()">${post.author}</a></span>
                         <span class="date">${formatDate(post.date)}</span>
                     </div>
                 </div>
@@ -809,9 +838,14 @@
         function openPost(postId) {
             const post = posts.find(p => p.id === postId);
             if (!post) return;
+
+            // Ocultar header, hero, admin-bar, suscripción y footer
+            document.body.classList.add('viewing-post');
+
             document.getElementById('postsContainer').style.display = 'none';
             const fullView = document.getElementById('postFull');
             fullView.classList.add('visible');
+
             document.getElementById('fullTitle').textContent = post.title;
             document.getElementById('fullMeta').innerHTML = `
                 <span class="author"><a href="${post.authorLink}" target="_blank">${post.author}</a></span>
@@ -821,13 +855,19 @@
                 <span class="category">${post.category}</span>
             `;
             document.getElementById('fullBody').innerHTML = renderMarkdown(post.fullContent);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Scroll instantáneo al tope
+            window.scrollTo(0, 0);
         }
 
         function closePost() {
+            // Volver a mostrar header, hero, etc.
+            document.body.classList.remove('viewing-post');
+
             document.getElementById('postFull').classList.remove('visible');
             document.getElementById('postsContainer').style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            window.scrollTo(0, 0);
         }
 
         // ============================================
