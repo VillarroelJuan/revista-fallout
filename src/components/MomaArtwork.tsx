@@ -2,6 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+/* =========================================================
+   TIPOS
+========================================================= */
+
 type Artwork = {
   id: string;
   museum: string;
@@ -11,6 +15,46 @@ type Artwork = {
   medium: string;
   image: string;
   url: string;
+};
+
+type ClevelandArtwork = {
+  id: number;
+  title?: string;
+
+  images?: {
+    web?: {
+      url?: string;
+    };
+    print?: {
+      url?: string;
+    };
+  };
+
+  creators?: Array<{
+    description?: string;
+    name?: string;
+  }>;
+
+  creation_date?: string;
+  technique?: string;
+  type?: string;
+  url?: string;
+  accession_number?: string;
+};
+
+type VAMArtwork = {
+  _primaryImageId?: string;
+  _primaryTitle?: string;
+
+  _primaryMaker?:
+    | string
+    | {
+        name?: string;
+      };
+
+  _primaryDate?: string;
+  objectType?: string;
+  systemNumber?: string;
 };
 
 /* =========================================================
@@ -73,6 +117,18 @@ const WILD_TERMS = [
 ];
 
 /* =========================================================
+   UTILIDADES
+========================================================= */
+
+function randomItem<T>(items: T[]): T {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function shuffle<T>(items: T[]): T[] {
+  return [...items].sort(() => Math.random() - 0.5);
+}
+
+/* =========================================================
    ELEGIR TIPO DE OBRA
 
    40% abstracto
@@ -97,14 +153,6 @@ function getCuratedTerm(): string {
   }
 
   return randomItem(WILD_TERMS);
-}
-
-function randomItem<T>(items: T[]): T {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
-function shuffle<T>(items: T[]): T[] {
-  return [...items].sort(() => Math.random() - 0.5);
 }
 
 /* =========================================================
@@ -186,12 +234,15 @@ async function getMetArtwork(): Promise<Artwork> {
         continue;
       }
 
-      await preloadImage(item.primaryImageSmall);
+      await preloadImage(
+        item.primaryImageSmall
+      );
 
       return {
         id: `met-${item.objectID}`,
 
-        museum: "THE MET · NEW YORK",
+        museum:
+          "THE MET · NEW YORK",
 
         title:
           item.title ||
@@ -219,7 +270,9 @@ async function getMetArtwork(): Promise<Artwork> {
     }
   }
 
-  throw new Error("The Met sin obra válida");
+  throw new Error(
+    "The Met sin obra válida"
+  );
 }
 
 /* =========================================================
@@ -246,7 +299,16 @@ async function getClevelandArtwork(): Promise<Artwork> {
 
   const result = await response.json();
 
-  const works = shuffle(result.data || []);
+  /*
+   * IMPORTANTE:
+   * Le indicamos a TypeScript qué estructura
+   * tienen los resultados de Cleveland.
+   */
+
+  const works =
+    shuffle<ClevelandArtwork>(
+      (result.data || []) as ClevelandArtwork[]
+    );
 
   for (const item of works) {
     try {
@@ -254,7 +316,10 @@ async function getClevelandArtwork(): Promise<Artwork> {
         item.images?.web?.url ||
         item.images?.print?.url;
 
-      if (!image || !item.title) {
+      if (
+        !image ||
+        !item.title
+      ) {
         continue;
       }
 
@@ -266,14 +331,14 @@ async function getClevelandArtwork(): Promise<Artwork> {
         "Artista desconocido";
 
       return {
-        id: `cleveland-${item.id}`,
+        id:
+          `cleveland-${item.id}`,
 
         museum:
           "CLEVELAND MUSEUM OF ART",
 
         title:
-          item.title ||
-          "Sin título",
+          item.title,
 
         artist:
           creator,
@@ -291,14 +356,16 @@ async function getClevelandArtwork(): Promise<Artwork> {
 
         url:
           item.url ||
-          `https://www.clevelandart.org/art/${item.accession_number}`,
+          `https://www.clevelandart.org/art/${item.accession_number || ""}`,
       };
     } catch {
       continue;
     }
   }
 
-  throw new Error("Cleveland sin obra válida");
+  throw new Error(
+    "Cleveland sin obra válida"
+  );
 }
 
 /* =========================================================
@@ -324,10 +391,21 @@ async function getVAMArtwork(): Promise<Artwork> {
 
   const result = await response.json();
 
-  const works = shuffle(result.records || []);
+  /*
+   * Acá hacemos lo mismo:
+   * TypeScript ahora sabe exactamente
+   * qué propiedades puede tener item.
+   */
+
+  const works =
+    shuffle<VAMArtwork>(
+      (result.records || []) as VAMArtwork[]
+    );
 
   if (works.length === 0) {
-    throw new Error("V&A sin resultados");
+    throw new Error(
+      "V&A sin resultados"
+    );
   }
 
   for (const item of works) {
@@ -340,15 +418,15 @@ async function getVAMArtwork(): Promise<Artwork> {
       }
 
       /*
-       * Imagen IIIF del V&A
+       * Imagen IIIF del V&A.
        */
 
       const image =
         `https://framemark.vam.ac.uk/collections/${imageId}/full/735,/0/default.jpg`;
 
       /*
-       * No mostramos la obra hasta comprobar
-       * que la imagen funciona.
+       * Comprobamos que la imagen
+       * realmente cargue.
        */
 
       await preloadImage(image);
@@ -407,10 +485,6 @@ async function getVAMArtwork(): Promise<Artwork> {
             : "https://collections.vam.ac.uk/",
       };
     } catch {
-      /*
-       * Si una imagen falla,
-       * buscamos otra.
-       */
       continue;
     }
   }
@@ -423,7 +497,6 @@ async function getVAMArtwork(): Promise<Artwork> {
 /* =========================================================
    MUSEOS ACTIVOS
 
-   Solamente:
    1. THE MET
    2. CLEVELAND
    3. V&A
@@ -443,8 +516,10 @@ async function getRandomArtwork(
   avoidId?: string
 ): Promise<Artwork> {
   /*
-   * Mezclamos los museos para que
-   * cualquiera pueda aparecer.
+   * Mezclamos los museos.
+   *
+   * Si uno falla, automáticamente
+   * intentamos con otro.
    */
 
   const sources =
@@ -463,10 +538,6 @@ async function getRandomArtwork(
         return artwork;
       }
     } catch {
-      /*
-       * Si un museo falla,
-       * probamos automáticamente otro.
-       */
       continue;
     }
   }
@@ -485,10 +556,7 @@ export default function MomaArtwork() {
     useState<Artwork | null>(null);
 
   /*
-   * Acá guardamos la próxima obra.
-   *
-   * Ya está descargada antes de que
-   * el usuario toque CAMBIAR.
+   * Próxima obra ya cargada.
    */
 
   const nextArtworkRef =
@@ -566,8 +634,8 @@ export default function MomaArtwork() {
         setArtwork(first);
 
         /*
-         * Apenas mostramos la primera obra,
-         * preparamos la siguiente.
+         * Apenas aparece la primera,
+         * cargamos otra en segundo plano.
          */
 
         window.setTimeout(() => {
@@ -589,9 +657,8 @@ export default function MomaArtwork() {
   const changeArtwork =
     useCallback(async () => {
       /*
-       * Si ya tenemos una obra preparada:
-       *
-       * CAMBIO INSTANTÁNEO.
+       * Si ya tenemos una preparada:
+       * cambio instantáneo.
        */
 
       if (
@@ -608,8 +675,8 @@ export default function MomaArtwork() {
         setArtwork(next);
 
         /*
-         * Inmediatamente empezamos
-         * a preparar otra.
+         * Preparamos inmediatamente
+         * la siguiente.
          */
 
         window.setTimeout(() => {
@@ -622,8 +689,8 @@ export default function MomaArtwork() {
       }
 
       /*
-       * Si todavía estamos preparando
-       * la siguiente, esperamos.
+       * Si todavía está preparando,
+       * evitamos hacer dos requests.
        */
 
       if (
@@ -633,10 +700,7 @@ export default function MomaArtwork() {
       }
 
       /*
-       * Fallback:
-       *
-       * si por alguna razón no había una
-       * obra preparada, buscamos una ahora.
+       * Fallback.
        */
 
       try {
@@ -687,7 +751,7 @@ export default function MomaArtwork() {
   /* =======================================================
      CAMBIO AUTOMÁTICO
 
-     45 segundos
+     Cada 45 segundos.
   ======================================================= */
 
   useEffect(() => {
@@ -713,9 +777,7 @@ export default function MomaArtwork() {
   ) {
     return (
       <aside className="moma-widget">
-
         <div className="moma-widget-top">
-
           <span>
             ARTE QUE RECOMENDAMOS
           </span>
@@ -723,13 +785,11 @@ export default function MomaArtwork() {
           <span className="moma-dot">
             ●
           </span>
-
         </div>
 
         <div className="moma-loading">
           CARGANDO OBRA...
         </div>
-
       </aside>
     );
   }
@@ -744,9 +804,7 @@ export default function MomaArtwork() {
   ) {
     return (
       <aside className="moma-widget">
-
         <div className="moma-widget-top">
-
           <span>
             ARTE QUE RECOMENDAMOS
           </span>
@@ -754,11 +812,9 @@ export default function MomaArtwork() {
           <span className="moma-dot">
             ●
           </span>
-
         </div>
 
         <div className="moma-loading">
-
           <button
             type="button"
             onClick={
@@ -768,9 +824,7 @@ export default function MomaArtwork() {
           >
             REINTENTAR ↻
           </button>
-
         </div>
-
       </aside>
     );
   }
@@ -789,7 +843,6 @@ export default function MomaArtwork() {
       {/* CABECERA */}
 
       <div className="moma-widget-top">
-
         <span>
           ARTE QUE RECOMENDAMOS
         </span>
@@ -797,28 +850,22 @@ export default function MomaArtwork() {
         <span className="moma-dot">
           ●
         </span>
-
       </div>
-
 
       {/* IMAGEN */}
 
       <div className="moma-artwork-image">
-
         <img
           key={artwork.id}
           src={artwork.image}
           alt={artwork.title}
           loading="eager"
         />
-
       </div>
-
 
       {/* INFORMACIÓN */}
 
       <div className="moma-info">
-
         <span className="moma-source">
           {artwork.museum}
         </span>
@@ -851,14 +898,11 @@ export default function MomaArtwork() {
         >
           VER OBRA ↗
         </a>
-
       </div>
-
 
       {/* FOOTER */}
 
       <div className="moma-widget-footer">
-
         <span>
           ENTENDEMOS LO QUE TE GUSTA
         </span>
@@ -879,7 +923,6 @@ export default function MomaArtwork() {
             ? "CAMBIAR ↻"
             : "PREPARANDO..."}
         </button>
-
       </div>
 
     </aside>
