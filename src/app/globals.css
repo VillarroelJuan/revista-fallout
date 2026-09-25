@@ -1,49 +1,933 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+/* =========================
+   RESET + VARIABLES
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --bg: #ffffff;
+  --bg-card: #f8f8f8;
+  --text: #0a0a0a;
+  --text-sec: #444444;
+  --green: #b1ff05;
+  --border: #dddddd;
+  --font: "Space Grotesk", sans-serif;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.6;
+  padding: 1.5rem;
 }
 
 a {
   color: inherit;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 3px solid var(--green);
+  padding-bottom: 1.2rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.logo {
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #000;
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+.logo span {
+  color: var(--green);
+  text-shadow: 0 0 20px rgba(177, 255, 5, 0.2);
+}
+
+.logo small {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-sec);
+  letter-spacing: 0.3em;
+  margin-top: 0.2rem;
+}
+
+.main-nav {
+  display: flex;
+  gap: 2rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.main-nav a {
+  color: var(--text-sec);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 0.3rem;
+  transition: 0.2s;
+}
+
+.main-nav a:hover {
+  color: #000;
+  border-bottom-color: var(--green);
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  background: #f0f0f0;
+  border-left: 6px solid var(--green);
+  padding: 2rem 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.hero h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.hero .highlight {
+  color: var(--green);
+  background: #000;
+  padding: 0 0.3rem;
+}
+
+.hero p {
+  color: var(--text-sec);
+  font-size: 1.1rem;
+  max-width: 650px;
+  margin-top: 0.7rem;
+}
+
+.hero p a {
+  color: #000;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--green);
+  text-underline-offset: 4px;
+}
+
+
+/* =========================
+   PUBLICACIONES
+========================= */
+
+.posts-section {
+  margin: 2rem 0 4rem;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.8rem;
+}
+
+.section-heading h2 {
+  font-size: 1.8rem;
+}
+
+.section-heading span {
+  color: var(--text-sec);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.grid-posts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+  align-items: stretch;
+}
+
+
+/* =========================
+   TARJETAS
+========================= */
+
+.post-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.8rem;
+  transition: 0.25s;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.post-card:hover {
+  border-color: #000;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.post-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.post-card-with-image {
+  padding: 0;
+}
+
+.post-card-image-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+}
+
+.post-card-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.post-card-with-image:hover .post-card-image {
+  transform: scale(1.04);
+}
+
+.post-card-content {
+  padding: 1.8rem 1.8rem 0;
+}
+
+.post-cat {
+  display: inline-block;
+  margin-bottom: 0.8rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 40px;
+
+  background: #000;
+  color: var(--green);
+
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.post-card h2 {
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 0.8rem;
+}
+
+.post-excerpt {
+  color: var(--text-sec);
+  font-size: 1rem;
+  line-height: 1.65;
+  margin-bottom: 1rem;
+}
+
+.post-meta {
+  font-size: 0.7rem;
+  color: var(--text-sec);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  margin-top: 1rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.post-card-with-image .post-meta {
+  margin: 1rem 1.8rem 0;
+  padding: 1rem 0 1.8rem;
+}
+
+.post-meta .author {
+  color: #000;
+  font-weight: 600;
+}
+
+.empty-posts {
+  padding: 4rem 2rem;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+
+/* =========================
+   NEWSLETTER
+========================= */
+
+.newsletter {
+  margin: 5rem 0 3rem;
+  background: #000;
+  color: #fff;
+  padding: 3rem;
+  border-left: 6px solid var(--green);
+
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.newsletter-label {
+  display: inline-block;
+  color: var(--green);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  margin-bottom: 0.8rem;
+}
+
+.newsletter h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin-bottom: 1rem;
+}
+
+.newsletter p {
+  color: #aaa;
+  max-width: 500px;
+}
+
+.newsletter-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0;
+  width: 100%;
+}
+
+.newsletter-form input {
+  width: 100%;
+  min-width: 0;
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 1.15rem 1.2rem;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.newsletter-form input:focus {
+  outline: 3px solid var(--green);
+  outline-offset: -3px;
+}
+
+.newsletter-form button {
+  background: var(--green);
+  color: #000;
+  border: none;
+  padding: 1.15rem 1.7rem;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+
+.newsletter-form button:hover {
+  background: #fff;
+}
+
+.newsletter-form button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.newsletter-message {
+  grid-column: 1 / -1;
+  width: 100%;
+  color: var(--green) !important;
+  font-size: 0.8rem;
+  margin-top: 0.7rem;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.site-footer {
+  border-top: 3px solid #000;
+  padding: 2rem 0 3rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 2rem;
+  flex-wrap: wrap;
+
+  color: var(--text-sec);
+  font-size: 0.8rem;
+}
+
+.footer-logo {
+  color: #000;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.footer-logo::after {
+  content: ".";
+  color: var(--green);
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: 0.2s;
+}
+
+.footer-links a:hover {
+  border-bottom-color: var(--green);
+}
+
+
+/* =========================
+   ARTÍCULO
+========================= */
+
+.article-page {
+  max-width: 850px;
+  margin: 4rem auto 6rem;
+}
+
+.back-home {
+  display: inline-block;
+  margin-bottom: 3rem;
+  color: var(--text-sec);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.back-home:hover {
+  color: #000;
+  text-decoration: underline;
+  text-decoration-color: var(--green);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+}
+
+.article-header {
+  border-bottom: 3px solid var(--green);
+  padding-bottom: 2rem;
+  margin-bottom: 3rem;
+}
+
+.article-header h1 {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  margin: 1rem 0 1.5rem;
+}
+
+.article-meta {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  color: var(--text-sec);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+
+/* =========================
+   PORTADA DEL ARTÍCULO
+========================= */
+
+.article-cover {
+  width: 100%;
+  margin: 0 0 3.5rem;
+  overflow: hidden;
+  background: #000;
+}
+
+.article-cover img {
+  display: block;
+  width: 100%;
+  max-height: 560px;
+  object-fit: cover;
+}
+
+
+/* =========================
+   CONTENIDO MARKDOWN
+========================= */
+
+.article-content {
+  font-size: 1.08rem;
+  line-height: 1.85;
+}
+
+.article-content p {
+  margin-bottom: 1.6rem;
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3 {
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.article-content h1 {
+  font-size: 2.5rem;
+  margin: 3.5rem 0 1.5rem;
+}
+
+.article-content h2 {
+  font-size: 2rem;
+  margin: 3.5rem 0 1.2rem;
+  border-left: 5px solid var(--green);
+  padding-left: 1rem;
+}
+
+.article-content h3 {
+  font-size: 1.4rem;
+  margin: 2.5rem 0 1rem;
+}
+
+.article-content a {
+  color: #000;
+  font-weight: 600;
+  text-decoration-color: var(--green);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 3px;
+}
+
+.article-content blockquote {
+  margin: 2.5rem 0;
+  padding: 1.5rem 2rem;
+  border-left: 5px solid var(--green);
+  background: #f2f2f2;
+  font-size: 1.2rem;
+  font-style: italic;
+}
+
+.article-content ul,
+.article-content ol {
+  margin: 1.5rem 0 1.5rem 2rem;
+}
+
+.article-content li {
+  margin-bottom: 0.5rem;
+}
+
+.article-content img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 2.5rem auto;
+  border-radius: 4px;
+}
+
+.article-content hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 3rem 0;
+}
+
+.article-content strong {
+  font-weight: 700;
+}
+
+
+/* =========================
+   CATEGORÍAS
+========================= */
+
+.category-page {
+  margin: 4rem 0 6rem;
+}
+
+.category-header {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 3px solid var(--green);
+}
+
+.category-label {
+  display: inline-block;
+  background: #000;
+  color: var(--green);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+
+.category-header h1 {
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+}
+
+.category-header p {
+  margin-top: 1rem;
+  color: var(--text-sec);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.category-page .empty-posts h2 {
+  margin-bottom: 0.5rem;
+}
+
+.category-page .empty-posts p {
+  color: var(--text-sec);
+}
+
+
+/* =========================
+   CONTACTO
+========================= */
+
+.contact-page {
+  max-width: 900px;
+  margin: 4rem auto 6rem;
+}
+
+.contact-header {
+  margin-bottom: 3rem;
+  border-bottom: 3px solid var(--green);
+  padding-bottom: 2.5rem;
+}
+
+.contact-header > span {
+  display: inline-block;
+  background: #000;
+  color: var(--green);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+
+.contact-header h1 {
+  font-size: clamp(4rem, 10vw, 8rem);
+  line-height: 0.9;
+  letter-spacing: -0.07em;
+}
+
+.contact-header h1 span {
+  color: var(--green);
+}
+
+.contact-header p {
+  max-width: 600px;
+  margin-top: 1.5rem;
+  color: var(--text-sec);
+  font-size: 1.1rem;
+}
+
+.contact-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.contact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contact-field-full {
+  grid-column: 1 / -1;
+}
+
+.contact-field label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.contact-field input,
+.contact-field textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  background: #f8f8f8;
+  color: #000;
+  font-family: var(--font);
+  font-size: 1rem;
+  outline: none;
+  transition: 0.2s;
+}
+
+.contact-field input:focus,
+.contact-field textarea:focus {
+  border-color: #000;
+  box-shadow: 4px 4px 0 var(--green);
+}
+
+.contact-field textarea {
+  min-height: 200px;
+  resize: vertical;
+}
+
+.contact-submit {
+  background: #000;
+  color: var(--green);
+  border: 0;
+  padding: 1rem 2rem;
+  font-family: var(--font);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.contact-submit:hover {
+  background: var(--green);
+  color: #000;
+}
+
+.contact-submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.contact-status {
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+  .newsletter {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .logo {
+    font-size: 3rem;
+  }
+
+  .logo small {
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+  }
+
+  .main-nav {
+    gap: 1rem;
+    font-size: 0.7rem;
+  }
+
+  .hero {
+    padding: 1.5rem;
+  }
+
+  .grid-posts {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .post-card-image-container {
+    aspect-ratio: 16 / 9;
+  }
+
+  .newsletter {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2rem 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .newsletter-form {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .newsletter-form input,
+  .newsletter-form button {
+    width: 100%;
+  }
+
+  .site-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer-links {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .article-page {
+    margin: 2rem auto 4rem;
+  }
+
+  .article-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .article-cover {
+    margin-bottom: 2.5rem;
+  }
+
+  .article-cover img {
+    max-height: 400px;
+  }
+
+  .article-content {
+    font-size: 1rem;
+  }
+
+  .article-content h2 {
+    font-size: 1.6rem;
+  }
+
+  .article-content blockquote {
+    padding: 1.2rem;
+  }
+
+  .category-page {
+    margin-top: 2rem;
+  }
+
+  .contact-page {
+    margin: 2rem auto 4rem;
+  }
+
+  .contact-form {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-field {
+    grid-column: 1 / -1;
+  }
+}
+
+
+/* =========================
+   CELULARES MUY CHICOS
+========================= */
+
+@media (max-width: 480px) {
+  body {
+    padding: 0.8rem;
+  }
+
+  .hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .post-card-content {
+    padding: 1.4rem 1.4rem 0;
+  }
+
+  .post-card-with-image .post-meta {
+    margin-left: 1.4rem;
+    margin-right: 1.4rem;
+  }
+
+  .newsletter {
+    padding: 1.5rem;
+  }
+
+  .newsletter h2 {
+    font-size: 2rem;
+  }
+
+  .article-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .contact-header h1 {
+    font-size: 3.5rem;
   }
 }
